@@ -45,6 +45,21 @@ class Arquivo   {
                 return registros;
             }
 
+
+            if(formato == Formato::DELIMITADO) {
+                string linha;
+                while (getline(arquivoEntrada,linha)){
+                    if (linha.empty()) continue; 
+
+                    Buffer buffer;
+                    buffer.pack(linha);
+
+                    T registroLido;
+                    registroLido.unpack(buffer,formato);
+                    registros.push_back(registroLido);
+                }
+            }
+
             if(formato == Formato::FIXO) {
                 T reg;
                 size_t tamanhoFixoRegistro = reg.getTamanhoFixo();
