@@ -7,13 +7,15 @@
 #include <vector>
 #include "Buffer.hpp"
 #include "Registro.hpp"
-
+#include <type_traits> // para is_base_of
 
 /*  As implementações foram realizadas no header
 para evitar erro de linkagem da classe especializada
 */
 template <typename T>
 class Arquivo   {
+
+    static_assert(is_base_of<Registro,T>::value, "T deve herdar de Registro."); // is_base_of <Tipo, Derivado>
     private:
         string nomeDoArquivo;
         Formato formato;
