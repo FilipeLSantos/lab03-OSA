@@ -1,18 +1,38 @@
 #include "include\Buffer.hpp"
 
-void Buffer::pack(string str, int tamanho) {}
-string Buffer::unpack(int tamanho) {}
+// Registro FIXO
+void Buffer::pack(string str, int tamanho){
+    if(str.size() < tamanho)
+        str.append(tamanho - str.size(), '\0');
+    else if(str.size() > tamanho)
+        str = str.substr(0, tamanho);
+    //data.append(str); Precisa consertar
+}
 
+string Buffer::unpack(int tamanho){
+    if(ponteiro + tamanho > data.size())
+        return "";
+    
+    //string field = data.substr(ponteiro, tamanho); preciso saber como faz essa mesma coisa para um vector de char
+    ponteiro += tamanho;
+
+    field.erase(field.find('\0')); // remove os espaços (\0) à direita
+    
+    return field;
+}
+
+// Registro DELIMITADO
 void Buffer::pack(char delim) {}
 string Buffer::unpackDelimitado(char delim) {}
 
+// Registro COMPRIMENTO
 void Buffer::pack(string str) {}
 string Buffer::unpackComprimento() {}
 
 void Buffer::pack(int valor) {}
 int Buffer::unpackInt() {}
 
-bool Buffer::write(ostream stream) {
+void Buffer::write(ostream stream) {
     size_t tamanho = data.size();
     stream.write(reinterpret_cast<const char*>(&tamanho), sizeof(tamanho));
     stream.write(data.data(), tamanho);

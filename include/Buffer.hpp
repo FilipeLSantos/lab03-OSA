@@ -7,6 +7,7 @@
 #include <cstring>
 #include <vector>
 #include "Registro.hpp"
+
 using namespace std;
 
 class Buffer {

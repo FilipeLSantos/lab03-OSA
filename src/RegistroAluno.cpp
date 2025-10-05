@@ -19,7 +19,7 @@ void RegistroAluno::pack(Buffer buffer, Formato formato){
             cerr << "Formato invalido !";
             break;
     }
-};
+}
 
 void RegistroAluno::unpack(Buffer buffer, Formato formato){};
 
