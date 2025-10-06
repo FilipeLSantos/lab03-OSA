@@ -1,38 +1,65 @@
 #include "include\Buffer.hpp"
 
-// Registro FIXO
-void Buffer::pack(string str, int tamanho){
+// ----------------- IMPLEMENTAçÃO DE PACK -----------------
+void Buffer::pack(const char* bytes, size_t tamanho){
+    data.insert(data.end(), bytes, bytes + tamanho); // insere a sequência bruta de bytes no final do buffer
+
+    /*
     if(str.size() < tamanho)
         str.append(tamanho - str.size(), '\0');
     else if(str.size() > tamanho)
         str = str.substr(0, tamanho);
     //data.append(str); Precisa consertar
+
+    */
+}
+
+void Buffer::pack(const string& strng) {
+    pack(strng.c_str(), strng.length()); // obtém o ponteiro para os char da string e seu tam, e insere os bytes da string sem '\0' 
+    // para incluir o '\0' é necessário "strng.length() + 1"
+}
+
+void Buffer::pack(int valor) {
+    pack(reinterpret_cast<const char*>(&valor), sizeof(int));
+}
+
+//void Buffer::pack(char delim) {}
+
+
+// ----------------- IMPLEMENTAçÃO DE UNPACK ----------------- 
+int Buffer::unpackInt() {
+    if(ponteiro + sizeof(int) > data.size()){
+        throw runtime_error("ERRO EM UNPACK: Buffer Underflow, falha ao tentar ler uma string, o buffer não têm bytes suficientes.");
+    }
+
+    int valor;
+    memcpy(&valor, &data[ponteiro], sizeof(int));
+    ponteiro += sizeof(int);
+
+    return valor;
 }
 
 string Buffer::unpack(int tamanho){
-    if(ponteiro + tamanho > data.size())
-        return "";
+    if(ponteiro + tamanho > data.size()) {
+        throw runtime_error("ERRO EM UNPACK: Buffer Underflow, falha ao tentar ler uma string, o buffer não têm bytes suficientes.");
+    }
     
-    //string field = data.substr(ponteiro, tamanho); preciso saber como faz essa mesma coisa para um vector de char
+    string field(&data[ponteiro], tamanho);
     ponteiro += tamanho;
-
-    field.erase(field.find('\0')); // remove os espaços (\0) à direita
+    // remove os espaços (\0) à direita
+    while(!field.empty() && field.back() == '\0') {
+        field.pop_back();
+    }
     
     return field;
 }
 
-// Registro DELIMITADO
-void Buffer::pack(char delim) {}
-string Buffer::unpackDelimitado(char delim) {}
+// string Buffer::unpackComprimento() {}
+// string Buffer::unpackDelimitado(char delim) {}
 
-// Registro COMPRIMENTO
-void Buffer::pack(string str) {}
-string Buffer::unpackComprimento() {}
 
-void Buffer::pack(int valor) {}
-int Buffer::unpackInt() {}
-
-void Buffer::write(ostream stream) {
+// ----------------- IMPLEMENTAÇÃO DO I/O -----------------
+bool Buffer::write(ostream stream) {
     size_t tamanho = data.size();
     stream.write(reinterpret_cast<const char*>(&tamanho), sizeof(tamanho));
     stream.write(data.data(), tamanho);
@@ -62,7 +89,13 @@ bool Buffer::read(istream stream) {
     return stream.gcount() == tamanho; // retorna se a qtd de chars da ultima operação de input é igual ao tam de leitura
 }
 
+
+// ----------------- IMPLEMENTAÇÃO DA LIMPEZA DO BUFFER -----------------
 void Buffer::clear() {
     data.clear();
     ponteiro = 0;
+}
+
+size_t Buffer::tamTotal() {
+    return this->data.size();
 }
