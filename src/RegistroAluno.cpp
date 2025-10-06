@@ -8,9 +8,11 @@ void RegistroAluno::pack(Buffer buffer, Formato formato){
         //FIXO
         case 0:
             break;
+            
         //DELIMITADO
         case 1:
             break;
+
         //COMPRIMENTO
         case 2:
             break;

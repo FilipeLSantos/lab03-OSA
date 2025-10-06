@@ -21,27 +21,30 @@ class Buffer {
 
     public:      
         /* Métodos sobrecarregados, 
-        responsabilidade da corretude da serialização
+        responsabilidade da serialização
         na implementação concreta de registro
         */
-        void pack (string str, int tamanho) ;
-        string unpack (int tamanho);
 
-        void pack (char delim);
-        string unpackDelimitado (char delim);
-        
+        // PACK
+        void pack (const char* bytes, size_t tamanho) ;
         void pack (string str);
-        string unpackComprimento ();
-
         void pack (int valor);
-        int unpackInt();
         
-        void write (ostream stream);
-        bool writeFixo(ostream stream); 
+        // UNPACK
+        string unpack (int tamanho);
+        int unpackInt();
 
+        // void pack (char delim);
+        // string unpackDelimitado (char delim);
+        // string unpackComprimento ();
+
+        // I/O 
+        bool write (ostream stream);
+        bool writeFixo(ostream stream); 
         bool read (istream stream, int tamanho);
         bool read (istream stream);
 
+        // CLEAR
         void clear();
 
 };
