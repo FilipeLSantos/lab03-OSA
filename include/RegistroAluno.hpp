@@ -17,10 +17,10 @@ class RegistroAluno : public Registro{
         string curso;
 
     public:
-        void pack(Buffer buffer, Formato formato);
-        void unpack(Buffer buffer, Formato formato);
-        string getChave();
-        int getTamanhoFixo();
+        void pack(Buffer& buffer, Formato formato) const override;
+        void unpack(Buffer& buffer, Formato formato) override;
+        string getChave() const override;
+        int getTamanhoFixo() const override;
 
 };
 

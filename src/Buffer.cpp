@@ -95,3 +95,7 @@ void Buffer::clear() {
     data.clear();
     ponteiro = 0;
 }
+
+size_t Buffer::tamTotal() {
+    return this->data.size();
+}
