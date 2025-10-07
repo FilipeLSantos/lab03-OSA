@@ -24,7 +24,8 @@ bool comaparaRegistros(const vector<RegistroAluno>& vec01, const vector <Registr
         nome02.erase(nome02.find_last_not_of(" \t\n\r\f\v") + 1);
         nome02.erase(0, nome02.find_first_not_of(" \t\n\r\f\v"));
 
-        if(nome01 != nome02 && vec01[i].matricula != vec02[i].matricula && 
+        // troquei o && por || para verificar erros em todos os campos
+        if(nome01 != nome02 || vec01[i].matricula != vec02[i].matricula || 
             vec01[i].curso != vec02[i].curso){
                 cerr << "ERRO DE DADOS: Divergencia no registro " << i << endl;
                 cerr << "Esperado: Nome: " << nome01 << ", Matricula: " << vec01[i].matricula << ", Curso: " << vec01[i].curso << endl;
@@ -89,37 +90,45 @@ int main(){
     Arquivo<RegistroAluno> arquivoDELIMITADO("alunosDELIMITADO.bin", Formato::DELIMITADO);
     Arquivo<RegistroAluno> arquivoCOMPRIMENTO("alunosCOMPRIMENTO.bin", Formato::COMPRIMENTO);
 
+    cout << "\n>>> FASE DE ESCRITA -------------------------------------------- <<<\n" << endl;
+
     for(const RegistroAluno& aluno : alunos){
         arquivoFIXO.adicionarRegistros(aluno);
         arquivoDELIMITADO.adicionarRegistros(aluno);
         arquivoCOMPRIMENTO.adicionarRegistros(aluno);
     }
 
+    cout << "\n>>> TESTE VISUAL PARA ESCRITA -------------------------------------------- <<<\n" << endl;
+
     testReadFile("alunosFIXO.bin", Formato::FIXO);
     testReadFile("alunosDELIMITADO.bin", Formato::DELIMITADO);
     testReadFile("alunosCOMPRIMENTO.bin", Formato::COMPRIMENTO);
+
+    cout << "\n>>> FASE DE RELEITURA -------------------------------------------- <<<\n" << endl;
 
     vector<RegistroAluno> lidosFIXO = arquivoFIXO.lerRegistros();
     vector<RegistroAluno> lidosDELIMITADO = arquivoDELIMITADO.lerRegistros();
     vector<RegistroAluno> lidosCOMPRIMENTO = arquivoCOMPRIMENTO.lerRegistros();
 
+
+    cout << "\n>>> FASE DE COMPARAÇÃO -------------------------------------------- <<<\n" << endl;
     // Verificação de FIXO
     if(comaparaRegistros(alunos, lidosFIXO))
-        cout << "Registros FIXO conferem com o CSV!" << endl;
+        cout << "[OK] Registros FIXO conferem com o CSV!" << endl;
     else
-        cout << "Registros FIXO NÃO conferem com o CSV!" << endl;
+        cout << "[Falha] Registros FIXO NÃO conferem com o CSV!" << endl;
     
     // Verificação de DELIMITADO
     if(comaparaRegistros(alunos, lidosDELIMITADO))
-        cout << "Registros DELIMITADO conferem com o CSV!" << endl;
+        cout << "[OK] Registros DELIMITADO conferem com o CSV!" << endl;
     else
-        cout << "Registros DELIMITADO NÃO conferem com o CSV!" << endl;
+        cout << "[Falha] Registros DELIMITADO NÃO conferem com o CSV!" << endl;
     
     // Verificação de COMPRIMENTO    
     if(comaparaRegistros(alunos, lidosCOMPRIMENTO))
-        cout << "Registros COMPRIMENTO conferem com o CSV!" << endl;
+        cout << "[OK] Registros COMPRIMENTO conferem com o CSV!" << endl;
     else
-        cout << "Registros COMPRIMENTO NÃO conferem com o CSV!" << endl;
+        cout << "[Falha] Registros COMPRIMENTO NÃO conferem com o CSV!" << endl;
     
 
     return 0;
