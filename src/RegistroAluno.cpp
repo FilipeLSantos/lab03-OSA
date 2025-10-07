@@ -93,6 +93,8 @@ void RegistroAluno::unpack(Buffer& buffer, Formato formato) {
             this->nome = buffer.unpack(tamNome);
         
             // falta o curso
+            int tamCurso = buffer.unpackInt();
+            this->curso = buffer.unpack(tamCurso);
             break;
     }
         

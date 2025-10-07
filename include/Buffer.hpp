@@ -48,6 +48,8 @@ class Buffer {
         // CLEAR
         void clear();
 
+        // FUNçÕES AUXILIARES
+        size_t tamTotal();
 };
 
 #endif
