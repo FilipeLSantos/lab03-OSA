@@ -90,4 +90,4 @@ void Buffer::clear() {
 
 size_t Buffer::tamTotal() {
     return this->data.size();
-
+}
