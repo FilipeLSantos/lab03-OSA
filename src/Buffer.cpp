@@ -1,21 +1,12 @@
-#include "include\Buffer.hpp"
+#include "../include/Buffer.hpp"
 
-// ----------------- IMPLEMENTAçÃO DE PACK -----------------
+// ---------------- IMPLEMENTAçÃO DE PACK -----------------
 void Buffer::pack(const char* bytes, size_t tamanho){
-    data.insert(data.end(), bytes, bytes + tamanho); // insere a sequência bruta de bytes no final do buffer
-
-    /*
-    if(str.size() < tamanho)
-        str.append(tamanho - str.size(), '\0');
-    else if(str.size() > tamanho)
-        str = str.substr(0, tamanho);
-    //data.append(str); Precisa consertar
-
-    */
+    data.insert(data.end(), bytes, bytes + tamanho);
 }
 
-void Buffer::pack(const string& strng) {
-    pack(strng.c_str(), strng.length()); // obtém o ponteiro para os char da string e seu tam, e insere os bytes da string sem '\0' 
+void Buffer::pack(const string& str) {
+    pack(str.c_str(), str.length()); // obtém o ponteiro para os char da string e seu tam, e insere os bytes da string sem '\0' 
     // para incluir o '\0' é necessário "strng.length() + 1"
 }
 
@@ -23,8 +14,9 @@ void Buffer::pack(int valor) {
     pack(reinterpret_cast<const char*>(&valor), sizeof(int));
 }
 
-//void Buffer::pack(char delim) {}
-
+void Buffer::pack(char delim) {
+    data.push_back(delim);
+}
 
 // ----------------- IMPLEMENTAçÃO DE UNPACK ----------------- 
 int Buffer::unpackInt() {
@@ -95,7 +87,7 @@ void Buffer::clear() {
     data.clear();
     ponteiro = 0;
 }
-
+/*
 size_t Buffer::tamTotal() {
     return this->data.size();
-}
+}*/

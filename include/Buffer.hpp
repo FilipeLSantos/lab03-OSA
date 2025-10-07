@@ -27,8 +27,9 @@ class Buffer {
 
         // PACK
         void pack (const char* bytes, size_t tamanho) ;
-        void pack (string str);
+        void pack (const string& str);
         void pack (int valor);
+        void pack (char delim);
         
         // UNPACK
         string unpack (int tamanho);
