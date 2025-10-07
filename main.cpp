@@ -95,5 +95,32 @@ int main(){
         arquivoCOMPRIMENTO.adicionarRegistros(aluno);
     }
 
+    testReadFile("alunosFIXO.bin", Formato::FIXO);
+    testReadFile("alunosDELIMITADO.bin", Formato::DELIMITADO);
+    testReadFile("alunosCOMPRIMENTO.bin", Formato::COMPRIMENTO);
+
+    vector<RegistroAluno> lidosFIXO = arquivoFIXO.lerRegistros();
+    vector<RegistroAluno> lidosDELIMITADO = arquivoDELIMITADO.lerRegistros();
+    vector<RegistroAluno> lidosCOMPRIMENTO = arquivoCOMPRIMENTO.lerRegistros();
+
+    // Verificação de FIXO
+    if(comaparaRegistros(alunos, lidosFIXO))
+        cout << "Registros FIXO conferem com o CSV!" << endl;
+    else
+        cout << "Registros FIXO NÃO conferem com o CSV!" << endl;
+    
+    // Verificação de DELIMITADO
+    if(comaparaRegistros(alunos, lidosDELIMITADO))
+        cout << "Registros DELIMITADO conferem com o CSV!" << endl;
+    else
+        cout << "Registros DELIMITADO NÃO conferem com o CSV!" << endl;
+    
+    // Verificação de COMPRIMENTO    
+    if(comaparaRegistros(alunos, lidosCOMPRIMENTO))
+        cout << "Registros COMPRIMENTO conferem com o CSV!" << endl;
+    else
+        cout << "Registros COMPRIMENTO NÃO conferem com o CSV!" << endl;
+    
+
     return 0;
 }
