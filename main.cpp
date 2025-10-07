@@ -29,7 +29,7 @@ vector<RegistroAluno> readCSV(const string& path){
 
         getline(ss, nomeCSV, ';');
         getline(ss, matriculaCSV, ';');
-        getline(ss, cursoCSV, ' ');
+        getline(ss, cursoCSV);
 
         aluno.nome = nomeCSV;
         aluno.matricula = stoi(matriculaCSV);
@@ -43,7 +43,17 @@ vector<RegistroAluno> readCSV(const string& path){
 
 int main(){
     
+    vector<RegistroAluno> alunos = readCSV("data/dados.csv");
     
+    Arquivo<RegistroAluno> arquivoFIXO("alunosFIXO.bin", Formato::FIXO);
+    Arquivo<RegistroAluno> arquivoDELIMITADO("alunosDELIMITADO.bin", Formato::DELIMITADO);
+    Arquivo<RegistroAluno> arquivoCOMPRIMENTO("alunosCOMPRIMENTO.bin", Formato::COMPRIMENTO);
+
+    for(const RegistroAluno& aluno : alunos){
+        arquivoFIXO.adicionarRegistros(aluno);
+        arquivoDELIMITADO.adicionarRegistros(aluno);
+        arquivoCOMPRIMENTO.adicionarRegistros(aluno);
+    }
 
     return 0;
 }
