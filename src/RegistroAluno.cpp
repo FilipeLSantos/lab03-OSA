@@ -23,11 +23,11 @@ void RegistroAluno::pack(Buffer& buffer, Formato formato) const {
         case Formato::FIXO: {
             buffer.pack(this->matricula);
             string nomeFixo = this->nome;
-            nomeFixo.resize(NOME, ' '); // GARANTE A QUANTIDADE DE BYTES FIXA DE NOMES 
+            nomeFixo.resize(NOME, '\0'); // GARANTE A QUANTIDADE DE BYTES FIXA DE NOMES 
             buffer.pack(nomeFixo); 
 
             string cursoFixo = this->curso;
-            cursoFixo.resize(CURSO, ' ');
+            cursoFixo.resize(CURSO, '\0'); // GARANTE A QUATIDADE DE BYTES FIXA DE NOMES
             buffer.pack(cursoFixo); 
             break;
         }
@@ -66,6 +66,12 @@ void RegistroAluno::pack(Buffer& buffer, Formato formato) const {
 void RegistroAluno::unpack(Buffer& buffer, Formato formato) {
     switch (formato) {
         case Formato::FIXO: {
+            this->matricula = buffer.unpackInt();
+            this->nome = buffer.unpack(NOME);
+            this->curso = buffer.unpack(CURSO);
+
+            this->nome.erase(this->nome.find_last_not_of('\0') + 1);
+            this->curso.erase(this->curso.find_last_not_of('\0') + 1);
             break;
     }
         case Formato::DELIMITADO: {
