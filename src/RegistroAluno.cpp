@@ -21,11 +21,12 @@ void RegistroAluno::pack(Buffer& buffer, Formato formato) const {
     switch (formato){
         //FIXO
         case Formato::FIXO: {
-            buffer.pack(this->matricula);
             string nomeFixo = this->nome;
             nomeFixo.resize(NOME, '\0'); // GARANTE A QUANTIDADE DE BYTES FIXA DE NOMES 
             buffer.pack(nomeFixo); 
 
+            buffer.pack(this->matricula);
+            
             string cursoFixo = this->curso;
             cursoFixo.resize(CURSO, '\0'); // GARANTE A QUATIDADE DE BYTES FIXA DE NOMES
             buffer.pack(cursoFixo); 
@@ -34,22 +35,26 @@ void RegistroAluno::pack(Buffer& buffer, Formato formato) const {
 
         //DELIMITADO
         case Formato::DELIMITADO: {
-            buffer.pack(to_string(this->matricula));
-            buffer.pack("|");
+            
             buffer.pack(this->nome);
-            buffer.pack("|");
+            buffer.pack(";");
+
+            buffer.pack(to_string(this->matricula));
+            buffer.pack(";");
+            
             buffer.pack(this->curso);
             break;
         }
             
         //COMPRIMENTO
         case Formato::COMPRIMENTO: {
-            buffer.pack(this->matricula);
-
+            
             int tamNome = this->nome.length();
             buffer.pack(tamNome);
             buffer.pack(this->nome);
    
+            buffer.pack(this->matricula);
+
             int tamCurso = this->curso.length();
             buffer.pack(tamCurso);
             buffer.pack(this->curso);
@@ -66,8 +71,10 @@ void RegistroAluno::pack(Buffer& buffer, Formato formato) const {
 void RegistroAluno::unpack(Buffer& buffer, Formato formato) {
     switch (formato) {
         case Formato::FIXO: {
-            this->matricula = buffer.unpackInt();
             this->nome = buffer.unpack(NOME);
+            
+            this->matricula = buffer.unpackInt();
+            
             this->curso = buffer.unpack(CURSO);
 
             this->nome.erase(this->nome.find_last_not_of('\0') + 1);
@@ -81,23 +88,23 @@ void RegistroAluno::unpack(Buffer& buffer, Formato formato) {
             stringstream linhaBuffer(linha);
             string campo;
 
-            getline(linhaBuffer,campo,'|');
-            this->matricula = stoi(campo);
-            
-            getline(linhaBuffer, campo, '|');
+            getline(linhaBuffer, campo, ';');
             this->nome = campo;
 
+            getline(linhaBuffer,campo,';');
+            this->matricula = stoi(campo);
+            
             getline(linhaBuffer,campo);
             this->curso = campo;
 
             break;
     }
         case Formato::COMPRIMENTO: {
-            this->matricula = buffer.unpackInt();
-
             int tamNome = buffer.unpackInt();
             this->nome = buffer.unpack(tamNome);
         
+            this->matricula = buffer.unpackInt();
+            
             // falta o curso
             int tamCurso = buffer.unpackInt();
             this->curso = buffer.unpack(tamCurso);
@@ -105,6 +112,7 @@ void RegistroAluno::unpack(Buffer& buffer, Formato formato) {
     }
         
     default:
+        throw runtime_error("ERRO EM UNPACK - REGISTROALUNO: Formato de serialização inválido");
         break;
     }
 
