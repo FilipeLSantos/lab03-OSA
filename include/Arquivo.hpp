@@ -19,16 +19,17 @@ class Arquivo   {
     private:
         string nomeDoArquivo;
         Formato formato;
+        char delimitador;
 
     public:
-        Arquivo(const string& nome, Formato fmt, char delim = '|') : nomeDoArquivo(nome), formato(fmt), delimitador(delim);
+        Arquivo(const string& nome, Formato fmt, char delim = '|') : nomeDoArquivo(nome), formato(fmt), delimitador(delim) {}
         Arquivo() = default;
-        ~Arquivo();
+        ~Arquivo() = default;
     
         void adicionarRegistros (T reg){
             // abre o arquivo em modo append e binário para todos os tipos
             ofstream arquivoSaida(nomeDoArquivo, ios::app | ios::binary);
-                if(!outfile){
+                if(!arquivoSaida){
                     cerr << "Não foi possível abrir o arquivo." << endl;
                 }
 
@@ -45,6 +46,37 @@ class Arquivo   {
                 return registros;
             }
 
+            /*
+            Buffer buffer;
+            switch (formato) {
+
+                case Formato::FIXO: {
+                    T regTemporario;
+                    int tamanhoFixo = regTemporario.getTamanhoFixo();
+                    while (buffer.read(arquivoEntrada,tamanhoFixo)) {
+                        T reg;
+                        reg.unpack(buffer, formato);
+                        registros.push_back(reg);
+                    }
+                    break;
+                }
+
+                case Formato::DELIMITADO:
+                case Formato::COMPRIMENTO: {
+                    while (buffer.read(arquivoEntrada)) {
+                        T reg;
+                        reg.unpack(buffer, formato);
+                        registros.push_back(reg);
+                    }
+                    break;
+                }
+            
+            default:
+                throw runtime_error("ERRO EM ARQUIVO: lerRegistros, formato inválido.");
+                break;
+            }
+            */
+
 
             if(formato == Formato::DELIMITADO) {
                 string linha;
@@ -59,12 +91,11 @@ class Arquivo   {
                     registros.push_back(registroLido);
                 }
             }
-
-            if(formato == Formato::FIXO) {
+            else if(formato == Formato::FIXO) {
                 T reg;
                 size_t tamanhoFixoRegistro = reg.getTamanhoFixo();
                 Buffer buffer;
-                while (buffer.read(nomeDoArquivo,tamanhoFixoRegistro)) {
+                while (buffer.read(arquivoEntrada,tamanhoFixoRegistro)) {
                     T registroLido;
                     registroLido.unpack(buffer,formato);
                     registros.push_back(registroLido); 
@@ -72,7 +103,7 @@ class Arquivo   {
             }
             else {
                 Buffer buffer;
-                while(buffer.read(nomeDoArquivo)) {
+                while(buffer.read(arquivoEntrada)) {
                     T registroLido;
                     registroLido.unpack(buffer,formato);
                     registros.push_back(registroLido);

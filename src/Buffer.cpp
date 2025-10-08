@@ -1,5 +1,8 @@
 #include "../include/Buffer.hpp"
 
+Buffer::~Buffer() {}
+Buffer::Buffer() : ponteiro(0) {}
+
 // ---------------- IMPLEMENTAçÃO DE PACK -----------------
 void Buffer::pack(const char* bytes, size_t tamanho){
     data.insert(data.end(), bytes, bytes + tamanho);
@@ -51,26 +54,26 @@ string Buffer::unpack(int tamanho){
 
 
 // ----------------- IMPLEMENTAÇÃO DO I/O -----------------
-bool Buffer::write(ostream stream) {
+bool Buffer::write(ostream& stream) {
     size_t tamanho = data.size();
     stream.write(reinterpret_cast<const char*>(&tamanho), sizeof(tamanho));
     stream.write(data.data(), tamanho);
     return stream.good();
 }
 
-bool Buffer::writeFixo(ostream stream) {
+bool Buffer::writeFixo(ostream& stream) {
     stream.write(data.data(), data.size());
     return stream.good();
 }
 
-bool Buffer::read(istream stream, int tamanho) {
+bool Buffer::read(istream& stream, int tamanho) {
     clear();
     data.resize(tamanho);
     stream.read(data.data(), tamanho);
     return stream.gcount() == tamanho;
 }
 
-bool Buffer::read(istream stream) {
+bool Buffer::read(istream& stream) {
     clear();
     size_t tamanho;
     stream.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho));

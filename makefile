@@ -19,7 +19,7 @@ MAIN := main
 SRC_DIR := src
 INC_DIR := include
 # Objetos a serem gerados
-OBJECTS := $(SRC_DIR)/$(MAIN).o $(SRC_DIR)/Registro.o $(SRC_DIR)/Buffer.o $(SRC_DIR)/Arquivo.o $(SRC_DIR)/RegistroAluno.o
+OBJECTS := $(SRC_DIR)/$(MAIN).o $(SRC_DIR)/Buffer.o $(SRC_DIR)/RegistroAluno.o
 # Flags de compilação
 FLAGS := -Wall -Wextra -std=c++17 -pedantic-errors -I$(INC_DIR)
 # Habilitar depuração
@@ -30,11 +30,14 @@ MATH := -lm
 CC := g++
 # Ajuste para Windows/Linux
 ifeq ($(OS), Windows_NT)
-OUTPUTMAIN := $(MAIN).exe
-RM := del /Q
+	OUTPUTMAIN := $(MAIN).exe
+	RM := del /Q /F
+	RUN_CMD := $(OUTPUTMAIN)
+	OBJECTS_WIN := $(subst /,\,$(OBJECTS))
 else
-OUTPUTMAIN := $(MAIN).out
-RM := rm -rf
+	OUTPUTMAIN := $(MAIN).out
+	RM := rm -rf
+	RUN_CMD := ./$(OUTPUTMAIN)
 endif
 
 # ponto de compilação principal
@@ -46,25 +49,31 @@ $(OUTPUTMAIN): $(OBJECTS)
 
 # Compila os arquivos fonte
 $(SRC_DIR)/main.o: main.cpp $(INC_DIR)/Arquivo.hpp $(INC_DIR)/Registro.hpp $(INC_DIR)/Buffer.hpp $(INC_DIR)/RegistroAluno.hpp
-	$(CC) $(FLAGS) -c main.cpp -o $@
-
-$(SRC_DIR)/Registro.o: $(SRC_DIR)/Registro.cpp $(INC_DIR)/Registro.hpp
 	$(CC) $(FLAGS) -c $< -o $@
 
-$(SRC_DIR)/Buffer.o: $(SRC_DIR)/Buffer.cpp $(INC_DIR)/Buffer.hpp $(INC_DIR)/Registro.hpp $(INC_DIR)/Arquivo.hpp
+#$(SRC_DIR)/Registro.o: $(SRC_DIR)/Registro.cpp $(INC_DIR)/Registro.hpp
+#	$(CC) $(FLAGS) -c $< -o $@
+
+$(SRC_DIR)/Buffer.o: $(SRC_DIR)/Buffer.cpp $(INC_DIR)/Buffer.hpp $(INC_DIR)/Registro.hpp
 	$(CC) $(FLAGS) -c $< -o $@
 
-$(SRC_DIR)/Arquivo.o: $(SRC_DIR)/Arquivo.cpp $(INC_DIR)/Arquivo.hpp $(INC_DIR)/Registro.hpp $(INC_DIR)/Buffer.hpp
-	$(CC) $(FLAGS) -c $< -o $@
+#$(SRC_DIR)/Arquivo.o: $(SRC_DIR)/Arquivo.cpp $(INC_DIR)/Arquivo.hpp $(INC_DIR)/Registro.hpp $(INC_DIR)/Buffer.hpp
+#	$(CC) $(FLAGS) -c $< -o $@
 
 $(SRC_DIR)/RegistroAluno.o: $(SRC_DIR)/RegistroAluno.cpp $(INC_DIR)/RegistroAluno.hpp $(INC_DIR)/Registro.hpp
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(OBJECTS)
-	$(RM) $(OUTPUTMAIN)
+ifeq ($(OS), Windows_NT)
+	-$(RM) $(OBJECTS_WIN)
+else
+	-$(RM) $(OBJECTS)
+endif
+	-$(RM) $(OUTPUTMAIN)
 	@echo Limpeza completa!
 
 run: all
-	./$(OUTPUTMAIN)
+	./$(RUN_CMD)
 	@echo Execução completa!
+
+.PHONY: all clean run

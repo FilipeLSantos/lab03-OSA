@@ -6,7 +6,7 @@
 #include <string>
 #include <cstring>
 #include <vector>
-#include "Registro.hpp"
+//#include "Registro.hpp"
 
 using namespace std;
 
@@ -40,10 +40,10 @@ class Buffer {
         // string unpackComprimento ();
 
         // I/O 
-        bool write (ostream stream);
-        bool writeFixo(ostream stream); 
-        bool read (istream stream, int tamanho);
-        bool read (istream stream);
+        bool write (ostream& stream);
+        bool writeFixo(ostream& stream); 
+        bool read (istream& stream, int tamanho);
+        bool read (istream& stream);
 
         // CLEAR
         void clear();
