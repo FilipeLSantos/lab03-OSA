@@ -35,7 +35,13 @@ class Arquivo   {
 
             Buffer buffer;
             reg.pack(buffer, formato);
-            buffer.write(arquivoSaida);
+
+            if(formato == Formato::FIXO) {
+                buffer.writeFixo(arquivoSaida);
+            }else{
+                buffer.write(arquivoSaida);
+            }
+            
         }
         
         vector<T> lerRegistros () {
@@ -46,7 +52,7 @@ class Arquivo   {
                 return registros;
             }
 
-            /*
+            
             Buffer buffer;
             switch (formato) {
 
@@ -75,16 +81,20 @@ class Arquivo   {
                 throw runtime_error("ERRO EM ARQUIVO: lerRegistros, formato inválido.");
                 break;
             }
-            */
+            
 
-
+            /*
             if(formato == Formato::DELIMITADO) {
                 string linha;
                 while (getline(arquivoEntrada,linha)){
                     if (linha.empty()) continue; 
 
                     Buffer buffer;
+                    //for (char c : linha) {
+                    //    buffer.pack(c);
+                    //}
                     buffer.pack(linha);
+
 
                     T registroLido;
                     registroLido.unpack(buffer,formato);
@@ -109,6 +119,7 @@ class Arquivo   {
                     registros.push_back(registroLido);
                 }
             }
+            */
              
             return registros;
         }

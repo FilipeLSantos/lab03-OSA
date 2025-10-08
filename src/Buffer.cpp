@@ -42,9 +42,16 @@ string Buffer::unpack(int tamanho){
     string field(&data[ponteiro], tamanho);
     ponteiro += tamanho;
     // remove os espaços (\0) à direita
-    while(!field.empty() && field.back() == '\0') {
-        field.pop_back();
+
+    size_t endpos = field.find_last_not_of(' ');
+    if (string::npos != endpos) {
+        field = field.substr(0, endpos + 1);
     }
+    /*
+    
+    while(!field.empty() && field.back() == ' ') {
+        field.pop_back();
+    }*/
     
     return field;
 }

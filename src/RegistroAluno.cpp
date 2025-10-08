@@ -14,6 +14,7 @@ int RegistroAluno::getTamanhoFixo() const {
     return sizeof(int) + NOME + CURSO;
 };
 
+
 // --- SERIALIZAçÃO ---
 void RegistroAluno::pack(Buffer& buffer, Formato formato) const {
     buffer.clear(); // SEMPRE É PRECISO LIMPAR O BUFFER ANTES DE INICIAR
